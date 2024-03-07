@@ -9,6 +9,7 @@ const addNoteHandler = (request, h) => {
   const updateAt = createdAt;
 
   const newNote = {
+    id,
     title,
     tags,
     body,
@@ -20,12 +21,13 @@ const addNoteHandler = (request, h) => {
 
   const isSuccess = notes.filter((note) => note.id == id).length > 0;
 
-  if (!isSuccess) {
+  if (isSuccess) {
     const response = h.response({
       status: 'success',
       message: 'Catatan berhasil ditambahkan',
       data: {
         noteId: id,
+        // notes,
       },
     });
     response.code(201);
@@ -71,7 +73,7 @@ const getNoteByIdHandler = (request, h) => {
 const editNoteByIdHandler = (request, h) => {
   const { id } = request.params;
 
-  const { title, tags, body } = request.params;
+  const { title, tags, body } = request.payload;
   const updateAt = new Date().toISOString();
 
   const index = notes.findIndex((note) => note.id == id);
@@ -88,6 +90,14 @@ const editNoteByIdHandler = (request, h) => {
     const response = h.response({
       status: 'success',
       message: 'Catatan berhasil diperbarui',
+      data: {
+        notes: {
+          id,
+          title,
+          tags,
+          body,
+        },
+      },
     });
     response.code(200);
     return response;
